@@ -42,24 +42,17 @@
                         <input type="email" id="loginEmail" placeholder="vous@exemple.com" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="block text-xs font-medium text-slate-600">Mot de passe</label>
-                            <span class="text-[11px] text-slate-400">Mot de passe oublié ?</span>
-                        </div>
-                        <input type="password" id="loginPassword" placeholder="6 caractères minimum" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Mot de passe</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
                     </div>
                     <button onclick="handleLogin()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center space-x-2">
                         <span>Accéder à mon compte</span>
                         <i class="fa-solid fa-arrow-right text-xs"></i>
                     </button>
-                    <div class="bg-white border border-slate-200 p-3 rounded-xl flex items-center space-x-2 text-xs text-slate-500">
-                        <i class="fa-solid fa-shield-halved text-slate-400 text-base"></i>
-                        <span>Vos informations sont protégées. Vous gardez le contrôle de votre compte à tout moment.</span>
-                    </div>
                 </div>
             </div>
 
-            <!-- Vue Inscription (Identique à la vidéo) -->
+            <!-- Vue Inscription -->
             <div id="view-register" class="space-y-4 hidden">
                 <div>
                     <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Inscription gratuite</span>
@@ -73,69 +66,41 @@
                 </div>
 
                 <div class="space-y-3 pt-2">
-                    <div class="flex items-center space-x-2 text-xs text-slate-500 font-medium mb-1">
-                        <span class="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px]">1</span>
-                        <span>Vos informations</span>
-                        <span class="text-slate-300">-----------</span>
-                        <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-[10px]">2</span>
-                    </div>
-
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-xs font-medium text-slate-600 mb-1">Nom</label>
-                            <input type="text" id="regNom" placeholder="Nom" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                            <input type="text" id="regNom" placeholder="Nom" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-600 mb-1">Prénom</label>
-                            <input type="text" id="regPrenom" placeholder="Prénom" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                            <input type="text" id="regPrenom" placeholder="Prénom" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Adresse email</label>
-                        <input type="email" id="regEmail" placeholder="vous@exemple.com" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                        <input type="email" id="regEmail" placeholder="vous@exemple.com" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Numéro WhatsApp</label>
-                        <input type="text" id="regPhone" placeholder="+229 07 00 00 00 01" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                        <input type="text" id="regPhone" placeholder="+229..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Pays</label>
-                        <select id="regCountry" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
-                            <option value="">Sélectionner un pays</option>
+                        <select id="regCountry" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                             <option value="Benin">Bénin</option>
-                            <option value="Burkina Faso">Burkina Faso</option>
-                            <option value="Cameroun">Cameroun</option>
                             <option value="Cote d'Ivoire">Côte d'Ivoire</option>
-                            <option value="Gabon">Gabon</option>
-                            <option value="Mali">Mali</option>
-                            <option value="Niger">Niger</option>
-                            <option value="Senegal">Sénégal</option>
                             <option value="Togo">Togo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Devise</label>
-                        <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
-                            <option>Franc CFA (BCEAO) (XOF)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Moyen de paiement</label>
-                        <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
-                            <option>Mobile Money / SebPay</option>
+                            <option value="Senegal">Sénégal</option>
+                            <option value="Cameroun">Cameroun</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Mot de passe</label>
-                        <input type="password" id="regPassword" placeholder="6 caractères minimum" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Confirmer le mot de passe</label>
-                        <input type="password" id="regConfirmPassword" placeholder="Confirmez votre mot de passe" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                        <input type="password" id="regPassword" placeholder="••••••••" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
                     </div>
                     <div class="flex items-start space-x-2 pt-1">
-                        <input type="checkbox" id="termsCheck" class="mt-1">
-                        <label for="termsCheck" class="text-xs text-slate-600">J'accepte les <strong>conditions d'utilisation</strong> et la <strong>politique de confidentialité</strong> de PayMail.</label>
+                        <input type="checkbox" id="termsCheck" checked class="mt-1">
+                        <label for="termsCheck" class="text-xs text-slate-600">J'accepte les <strong>conditions d'utilisation</strong>.</label>
                     </div>
                     <button onclick="handleRegister()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-md transition text-sm">
                         Créer mon compte <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
@@ -156,18 +121,18 @@
             </div>
             <div class="flex items-center space-x-3">
                 <button onclick="switchTab('profile')" class="text-slate-700 bg-slate-100 w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border border-slate-200">
-                    PM
+                    AK
                 </button>
             </div>
         </header>
 
         <main class="flex-1 max-w-md w-full mx-auto p-4 pb-28 space-y-4">
+            
             <!-- ONGLET ACCUEIL -->
             <div id="tab-accueil" class="space-y-4">
-                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-3 shadow-lg">
-                    <p class="text-xs text-slate-400">Bienvenue sur votre tableau de bord</p>
-                    <h2 class="text-xl font-bold">Espace PayMail actif</h2>
-                    <p class="text-xs text-slate-300">Créez des comptes Gmail et gagnez 2500 FCFA par mission validée.</p>
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-1 shadow-lg">
+                    <p class="text-xs text-slate-400" id="welcomeUserText">Bonjour, Akoueyon Jean Eudes Ki</p>
+                    <h2 class="text-xl font-bold">Votre espace PayMail</h2>
                 </div>
 
                 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-xs">
@@ -176,18 +141,37 @@
                             <i class="fa-solid fa-lock text-sm"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 text-sm">Activation du compte requise</h4>
-                            <p class="text-xs text-slate-600 mt-0.5">Effectuez le transfert de sécurité de 3500 FCFA pour débloquer toutes vos missions.</p>
+                            <h4 class="font-bold text-slate-900 text-sm">Compte en attente d'activation</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">Effectuez le dépôt d'activation pour accéder aux missions et aux gains.</p>
                         </div>
                     </div>
                     <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
                         <span>Payer 3500 FCFA via SebPay</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
+                    <button onclick="verifyActivation()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold py-2.5 rounded-xl text-xs transition">
+                        <i class="fa-solid fa-rotate"></i> J'ai payé, vérifier mon activation
+                    </button>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-xs space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded flex items-center space-x-1">
+                            <i class="fa-solid fa-bolt text-[10px]"></i> <span>OBJECTIF DU JOUR</span>
+                        </span>
+                        <span class="text-xs text-slate-400 font-medium">Progression: 0 / 30</span>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900">75 000 FCFA</h3>
+                    <p class="text-xs text-slate-500">Créez jusqu'à 30 comptes Gmail aujourd'hui pour atteindre cet objectif.</p>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-1">
+                        <div class="bg-amber-400 h-full w-0"></div>
+                    </div>
                 </div>
 
                 <div class="space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">Missions Gmail disponibles</h3>
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-900 text-sm">Missions disponibles</h3>
+                    </div>
                     <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs flex justify-between items-center">
                         <div class="flex items-center space-x-3">
                             <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
@@ -195,9 +179,12 @@
                             </div>
                             <div>
                                 <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">DISPONIBLE</span>
-                                <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail - Partenaire A</h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock"></i> 5 min • 2500 FCFA</p>
+                                <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail - Tech Solutions</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock"></i> 5 min • Gmail</p>
                             </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-emerald-600 font-extrabold text-sm">2500 <span class="text-xs">FCFA</span></span>
                         </div>
                     </div>
                 </div>
@@ -207,15 +194,42 @@
             <div id="tab-missions" class="hidden space-y-4">
                 <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
                     <h2 class="text-lg font-bold">Missions Gmail</h2>
-                    <p class="text-xs text-slate-300">Validez vos tâches pour augmenter vos revenus.</p>
+                    <p class="text-xs text-slate-300">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois.</p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-center space-y-3 shadow-xs">
+                    <div class="w-12 h-12 bg-amber-200 text-amber-800 rounded-full flex items-center justify-center mx-auto text-lg">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">Missions verrouillées</h3>
+                    <p class="text-xs text-slate-600">Activez votre compte en effectuant le dépôt de 3500 FCFA pour accéder aux missions.</p>
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm">
+                        Payer 3500 FCFA via SebPay <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- ONGLET GAINS -->
             <div id="tab-gains" class="hidden space-y-4">
                 <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-3 shadow-lg">
-                    <p class="text-xs text-slate-400">Solde disponible</p>
-                    <h2 class="text-2xl font-extrabold text-white">0 FCFA</h2>
+                    <p class="text-xs text-slate-400">Votre activité</p>
+                    <h2 class="text-lg font-bold">Mes gains</h2>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/50 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-slate-400">Solde disponible</span>
+                            <h3 class="text-2xl font-extrabold text-white mt-0.5">0 FCFA</h3>
+                        </div>
+                        <div class="text-right text-xs text-slate-400">
+                            <p>0 Missions terminées</p>
+                            <p class="text-amber-400 font-semibold mt-1">2500 Gain par mission</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center space-y-3 shadow-xs">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto text-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
+                    <p class="text-xs text-slate-500">Vos gains apparaîtront ici après la validation de vos premières missions.</p>
                 </div>
             </div>
 
@@ -223,7 +237,26 @@
             <div id="tab-retraits" class="hidden space-y-4">
                 <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
                     <h2 class="text-lg font-bold">Retirer mes gains</h2>
-                    <p class="text-xs text-slate-300">Minimum de retrait : 10 000 FCFA</p>
+                    <p class="text-xs text-slate-300">Utilisez vos gains quand le souhaitez.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-xs">
+                    <h4 class="font-bold text-slate-900 text-sm">Vérifiez votre numéro de paiement</h4>
+                    <p class="text-xs text-slate-600">Pour associer votre numéro et recevoir vos paiements directement sur votre Mobile Money, effectuez une transaction de 7000 FCFA via SebPay.</p>
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm">
+                        Payer 7000 FCFA via SebPay <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 space-y-3 shadow-xs">
+                    <span class="text-xs text-slate-400 font-medium">Minimum de retrait : 10 000 FCFA</span>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Montant à retirer</label>
+                        <input type="number" id="withdrawAmount" value="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm">
+                    </div>
+                    <button onclick="alert('Minimum requis non atteint')" class="w-full bg-slate-900 text-white font-semibold py-3 rounded-xl text-xs">
+                        Continuer
+                    </button>
                 </div>
             </div>
 
@@ -231,6 +264,21 @@
             <div id="tab-profile" class="hidden space-y-4">
                 <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
                     <h2 class="text-lg font-bold">Mon profil</h2>
+                </div>
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-xs">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-amber-400 text-slate-950 rounded-full flex items-center justify-center font-extrabold text-base">
+                            AK
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm" id="profileName">Akoueyon Jean Eudes Ki</h4>
+                            <p class="text-xs text-slate-500" id="profileEmail">goudjoejaneudes@gmail.com</p>
+                            <div class="flex space-x-2 mt-1">
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Compte actif</span>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Paiement non vérifié</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <button onclick="handleLogout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 rounded-2xl text-xs transition">
                     Se déconnecter
@@ -287,11 +335,14 @@
         }
 
         function handleRegister() {
-            const terms = document.getElementById('termsCheck').checked;
-            if(!terms) {
-                alert("Veuillez accepter les conditions d'utilisation.");
-                return;
-            }
+            const nom = document.getElementById('regNom').value || "Akoueyon";
+            const prenom = document.getElementById('regPrenom').value || "Jean Eudes";
+            const email = document.getElementById('regEmail').value || "goudjoejaneudes@gmail.com";
+
+            document.getElementById('welcomeUserText').innerText = `Bonjour, ${nom} ${prenom}`;
+            document.getElementById('profileName').innerText = `${nom} ${prenom}`;
+            document.getElementById('profileEmail').innerText = email;
+
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('app-main').classList.remove('hidden');
         }
@@ -320,6 +371,11 @@
                 activeNav.classList.remove('text-slate-400');
                 activeNav.classList.add('text-amber-500');
             }
+        }
+
+        function verifyActivation() {
+            alert("Vérification en cours... Redirection vers SebPay si le paiement n'est pas validé.");
+            redirectToSebPay();
         }
     </script>
 </body>
