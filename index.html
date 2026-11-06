@@ -14,14 +14,15 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- ÉCRAN D'AUTHENTIFICATION (CONNEXION / INSCRIPTION) -->
+    <!-- ÉCRAN D'AUTHENTIFICATION -->
     <div id="auth-container" class="fixed inset-0 bg-slate-50 z-50 flex flex-col justify-between p-4 overflow-y-auto">
         <div class="max-w-md w-full mx-auto space-y-4 my-auto py-6">
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center justify-between">
                 <div class="bg-amber-400 text-slate-950 font-black px-3 py-2 rounded-xl flex items-center space-x-1.5 shadow-md">
                     <i class="fa-solid fa-envelope text-lg"></i>
                     <span class="text-base tracking-tight">PayMail</span>
                 </div>
+                <button onclick="openAdminLogin()" class="text-xs bg-slate-900 text-white font-bold px-3 py-2 rounded-xl">Accès Admin</button>
             </div>
 
             <!-- Vue Connexion -->
@@ -52,7 +53,7 @@
                 </div>
             </div>
 
-            <!-- Vue Inscription (Champs vides) -->
+            <!-- Vue Inscription -->
             <div id="view-register" class="space-y-3 hidden">
                 <div>
                     <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Inscription gratuite</span>
@@ -129,6 +130,94 @@
         </div>
     </div>
 
+    <!-- PANNEAU ADMINISTRATEUR -->
+    <div id="admin-container" class="hidden fixed inset-0 bg-slate-900 z-50 flex flex-col justify-between p-4 overflow-y-auto text-white">
+        <div class="max-w-md w-full mx-auto space-y-6 my-auto py-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <div class="flex items-center space-x-2">
+                    <span class="bg-red-500 text-white font-black px-2.5 py-1 rounded-lg text-xs">ADMIN</span>
+                    <h2 class="text-xl font-bold">Panneau de Contrôle</h2>
+                </div>
+                <button onclick="closeAdmin()" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Login Admin si non connecté -->
+            <div id="admin-login-box" class="space-y-4">
+                <p class="text-xs text-slate-400">Veuillez entrer le mot de passe administrateur pour continuer.</p>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mot de passe Admin</label>
+                    <input type="password" id="adminPasswordInput" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm">
+                </div>
+                <button onclick="verifyAdminPassword()" class="w-full bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-xs">Se connecter à l'Admin</button>
+            </div>
+
+            <!-- Contenu Admin (Gérant Dépôts, Retraits, Mails) -->
+            <div id="admin-dashboard" class="hidden space-y-5">
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400">Total Dépôts en attente</span>
+                        <h3 class="text-lg font-black text-amber-400 mt-1" id="adminDepotCount">1</h3>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400">Total Retraits en attente</span>
+                        <h3 class="text-lg font-black text-amber-400 mt-1" id="adminRetraitCount">1</h3>
+                    </div>
+                </div>
+
+                <!-- Gestion des Activations / Dépôts (3500 & 7000) -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-bold text-slate-300">Demandes de Paiement & Activation</h3>
+                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-white" id="admUserName">Akoueyon Jean Eudes</p>
+                                <p class="text-slate-400 text-[11px]" id="admUserPhone">0167197561 • 3500 FCFA</p>
+                            </div>
+                            <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">En attente</span>
+                        </div>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="adminValidateActivation(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg">Valider</button>
+                            <button onclick="adminValidateActivation(false)" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg">Rejeter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestion des Retraits -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-bold text-slate-300">Demandes de Retraits</h3>
+                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-white">Akoueyon Jean Eudes</p>
+                                <p class="text-slate-400 text-[11px]">10 000 FCFA • MTN MoMo</p>
+                            </div>
+                            <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">En attente</span>
+                        </div>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="adminValidateWithdrawal()" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-lg">Marquer Payé</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation des Mails / Missions -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-bold text-slate-300">Validation des Comptes Gmail (Missions)</h3>
+                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-white">Tech Solutions SARL</p>
+                                <p class="text-slate-400 text-[11px]">Création de compte Gmail (+2500 FCFA)</p>
+                            </div>
+                        </div>
+                        <button onclick="adminValidateMission()" class="w-full bg-amber-400 text-slate-950 font-bold py-2 rounded-lg">Créditer l'utilisateur (2500 FCFA)</button>
+                    </div>
+                </div>
+
+                <button onclick="closeAdmin()" class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs border border-slate-700">Fermer l'Admin</button>
+            </div>
+        </div>
+    </div>
+
     <!-- APPLICATION PRINCIPALE -->
     <div id="app-main" class="hidden flex-1 flex flex-col justify-between">
         <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-40 flex justify-between items-center text-white">
@@ -139,7 +228,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="switchTab('profile')" class="text-amber-400 hover:text-white transition"><i class="fa-regular fa-bell text-lg"></i></button>
+                <button onclick="openAdminLogin()" class="text-xs bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400">Admin</button>
                 <button onclick="switchTab('profile')" class="text-slate-300 hover:text-white transition"><i class="fa-regular fa-user text-lg"></i></button>
             </div>
         </header>
@@ -153,17 +242,17 @@
                     <h2 class="text-2xl font-black text-slate-900">Votre espace PayMail</h2>
                 </div>
 
-                <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 space-y-3 shadow-xs">
+                <div id="activationAlertBox" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 space-y-3 shadow-xs">
                     <div class="flex items-start space-x-3">
                         <div class="bg-amber-100 text-amber-700 p-2.5 rounded-xl mt-0.5">
                             <i class="fa-regular fa-clock text-sm"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 text-sm">Compte en attente d'activation</h4>
-                            <p class="text-xs text-slate-600 mt-0.5">Effectuez le dépôt d'activation pour accéder aux missions et aux gains.</p>
+                            <h4 class="font-bold text-slate-900 text-sm" id="activationTitle">Compte en attente d'activation</h4>
+                            <p class="text-xs text-slate-600 mt-0.5" id="activationDesc">Effectuez le dépôt d'activation pour accéder aux missions et aux gains.</p>
                         </div>
                     </div>
-                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
+                    <button id="activationBtn" onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
                         <span>Payer 3500 FCFA via SebPay</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -178,19 +267,18 @@
                         <span class="text-[10px] font-bold text-slate-900 bg-amber-400 px-2.5 py-1 rounded-md flex items-center space-x-1">
                             <i class="fa-solid fa-bolt text-[10px]"></i> <span>OBJECTIF DU JOUR</span>
                         </span>
-                        <span class="text-xs text-slate-400 font-medium">Progression du jour · 0 / 30</span>
+                        <span class="text-xs text-slate-400 font-medium">Progression du jour · <span id="progCount">0</span> / 30</span>
                     </div>
                     <h3 class="text-2xl font-black text-white">75 000 FCFA</h3>
                     <p class="text-xs text-slate-300">Créez jusqu'à 30 comptes Gmail aujourd'hui pour atteindre cet objectif.</p>
                     <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                        <div class="bg-amber-400 h-full w-0"></div>
+                        <div id="progBar" class="bg-amber-400 h-full w-0"></div>
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-slate-900 text-sm">Missions disponibles</h3>
-                        <span class="text-xs text-slate-500 font-medium cursor-pointer">Voir tout ></span>
                     </div>
                     
                     <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs space-y-3">
@@ -220,21 +308,17 @@
                     <p class="text-xs text-slate-500">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois</p>
                     <h2 class="text-2xl font-black text-slate-900">Missions Gmail</h2>
                 </div>
-                <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
+                <div id="missionsContent" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
                     <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-lock" id="missionLockIcon"></i>
                     </div>
                     <div class="space-y-1">
-                        <h3 class="font-bold text-slate-900 text-base">Missions verrouillées</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">Activez votre compte en effectuant le dépôt de 3500 FCFA pour accéder aux missions.</p>
+                        <h3 class="font-bold text-slate-900 text-base" id="missionStatusTitle">Missions verrouillées</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" id="missionStatusDesc">Activez votre compte en effectuant le dépôt de 3500 FCFA pour accéder aux missions.</p>
                     </div>
-                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
+                    <button id="missionActionBtn" onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
                         <span>Payer 3500 FCFA via SebPay</span>
                         <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                    <button onclick="verifyActivation()" class="w-full bg-white text-slate-800 border border-slate-300 font-semibold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-rotate"></i>
-                        <span>J'ai payé, vérifier mon activation</span>
                     </button>
                 </div>
             </div>
@@ -250,12 +334,12 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-xs text-slate-400 font-medium">Solde disponible</span>
-                            <h3 class="text-3xl font-black text-white mt-1">0 <span class="text-lg font-normal">FCFA</span></h3>
+                            <h3 class="text-3xl font-black text-white mt-1"><span id="userBalance">0</span> <span class="text-lg font-normal">FCFA</span></h3>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-800 text-xs">
                         <div>
-                            <p class="text-amber-400 font-bold text-base">0</p>
+                            <p class="text-amber-400 font-bold text-base" id="completedMissionsCount">0</p>
                             <p class="text-slate-400">Missions terminées</p>
                         </div>
                         <div>
@@ -272,16 +356,8 @@
                             <i class="fa-solid fa-trophy"></i>
                         </div>
                         <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos premières missions Gmail.</p>
+                        <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos premières missions.</p>
                     </div>
-                </div>
-
-                <div class="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer" onclick="switchTab('retraits')">
-                    <div class="text-xs">
-                        <p class="font-bold text-slate-900">Besoin de retirer vos gains ?</p>
-                        <p class="text-slate-500">Votre solde est disponible à tout moment.</p>
-                    </div>
-                    <i class="fa-solid fa-arrow-right text-slate-700"></i>
                 </div>
             </div>
 
@@ -297,8 +373,7 @@
                         <i class="fa-solid fa-wallet text-slate-700"></i>
                         <span>Minimum de retrait : 10 000 FCFA</span>
                     </div>
-                    <p class="text-xs text-slate-500">Votre solde actuel est de 0 FCFA.</p>
-                    <p class="text-xs text-slate-500">Continuez vos missions pour atteindre le minimum.</p>
+                    <p class="text-xs text-slate-500">Votre solde actuel est de <span id="withdrawSoldeDisplay">0</span> FCFA.</p>
                 </div>
 
                 <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-xs">
@@ -308,11 +383,11 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-slate-900 text-sm">Vérifiez votre numéro de paiement</h4>
-                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">Pour associer votre numéro et recevoir vos paiements directement sur votre Mobile Money, effectuez une transaction de 7000 FCFA via le lien sécurisé SebPay.</p>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">Effectuez une transaction de 7000 FCFA via SebPay pour associer votre Mobile Money.</p>
                         </div>
                     </div>
 
-                    <div class="bg-white p-3.5 rounded-xl border border-amber-200/60 text-xs space-y-1.5 shadow-2xs">
+                    <div class="bg-white p-3.5 rounded-xl border border-amber-200/60 text-xs space-y-1.5">
                         <div class="flex justify-between"><span class="text-slate-500">Numéro</span><strong class="text-slate-900 font-mono" id="displayPhone">0100000000</strong></div>
                         <div class="flex justify-between"><span class="text-slate-500">Moyen</span><strong class="text-slate-900">MTN MoMo</strong></div>
                     </div>
@@ -321,10 +396,6 @@
                         <span>Payer 7000 FCFA via SebPay</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                    <button onclick="verifyAssociation()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-rotate"></i>
-                        <span>J'ai payé, vérifier l'association</span>
-                    </button>
                 </div>
 
                 <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-xs space-y-3">
@@ -332,36 +403,13 @@
                         <i class="fa-solid fa-money-bill-transfer text-slate-700"></i>
                         <span>Nouveau retrait</span>
                     </div>
-                    <span class="text-xs text-slate-400 block">Minimum de retrait : 10 000 FCFA</span>
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Montant à retirer</label>
-                        <div class="relative">
-                            <input type="number" id="withdrawAmount" value="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400 font-bold">
-                            <span class="absolute right-4 top-3 text-xs font-bold text-slate-400">FCFA</span>
-                        </div>
+                        <input type="number" id="withdrawAmount" value="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-bold">
                     </div>
-                    <button onclick="requestWithdrawal()" class="w-full bg-amber-300 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-                        <span>Continuer</span>
-                        <i class="fa-solid fa-arrow-right"></i>
+                    <button onclick="requestWithdrawal()" class="w-full bg-amber-300 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-xs transition">
+                        Continuer
                     </button>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="font-bold text-slate-900 text-sm">Méthode de retrait</h3>
-                    <div class="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center shadow-xs">
-                        <div class="flex items-center space-x-3">
-                            <div class="bg-slate-100 text-slate-700 p-3 rounded-xl">
-                                <i class="fa-solid fa-mobile-screen text-lg"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 text-sm">MTN MoMo</h4>
-                                <p class="text-xs text-slate-500 font-mono" id="displayPhoneSub">0100000000</p>
-                            </div>
-                        </div>
-                        <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -372,47 +420,24 @@
                     <h2 class="text-2xl font-black text-slate-900">Mon profil</h2>
                 </div>
 
-                <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between relative overflow-hidden">
-                    <div class="flex items-center space-x-3.5 z-10">
-                        <div id="userInitials" class="w-14 h-14 bg-amber-400 text-slate-950 rounded-full flex items-center justify-center font-black text-lg shadow-md">
+                <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-3.5">
+                        <div id="userInitials" class="w-14 h-14 bg-amber-400 text-slate-950 rounded-full flex items-center justify-center font-black text-lg">
                             US
                         </div>
-                        <div class="space-y-1">
+                        <div>
                             <h4 class="font-bold text-white text-sm" id="profileName">Nom Prénom</h4>
                             <p class="text-xs text-slate-400 font-mono" id="profileEmail">email@exemple.com</p>
                             <div class="flex space-x-1.5 pt-1">
-                                <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">Compte actif</span>
-                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">Paiement non vérifié</span>
+                                <span id="profileStatusBadge" class="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full">En attente d'activation</span>
                             </div>
                         </div>
                     </div>
-                    <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-9 h-9 rounded-full flex items-center justify-center z-10 border border-slate-700 transition">
-                        <i class="fa-solid fa-pen text-xs"></i>
-                    </button>
                 </div>
 
-                <div class="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs divide-y divide-slate-100 text-xs">
-                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
-                        <span class="flex items-center space-x-3"><i class="fa-regular fa-user text-slate-400 text-base w-5"></i> <span class="font-semibold">Informations personnelles</span></span>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </button>
-                    <button onclick="switchTab('retraits')" class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
-                        <span class="flex items-center space-x-3"><i class="fa-solid fa-shield-halved text-slate-400 text-base w-5"></i> <span class="font-semibold">Numéro de paiement non vérifié</span></span>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </button>
-                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
-                        <span class="flex items-center space-x-3"><i class="fa-solid fa-lock text-slate-400 text-base w-5"></i> <span class="font-semibold">Sécurité et confidentialité</span></span>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </button>
-                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
-                        <span class="flex items-center space-x-3"><i class="fa-regular fa-circle-question text-slate-400 text-base w-5"></i> <span class="font-semibold">Besoin d'aide ?</span></span>
-                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                    </button>
-                    <button onclick="handleLogout()" class="w-full p-4 flex justify-between items-center hover:bg-red-50/50 text-left font-medium text-red-600">
-                        <span class="flex items-center space-x-3"><i class="fa-solid fa-right-from-bracket text-red-500 text-base w-5"></i> <span class="font-bold">Se déconnecter</span></span>
-                        <i class="fa-solid fa-chevron-right text-red-300"></i>
-                    </button>
-                </div>
+                <button onclick="handleLogout()" class="w-full bg-red-50 text-red-600 font-semibold py-3 rounded-2xl text-xs">
+                    Se déconnecter
+                </button>
             </div>
         </main>
 
@@ -441,9 +466,16 @@
         </nav>
     </div>
 
-    <!-- SCRIPT DE FONCTIONNEMENT -->
+    <!-- SCRIPT DE FONCTIONNEMENT ET LOGIQUE ADMIN -->
     <script>
         const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
+        let userState = {
+            isActivated: false,
+            balance: 0,
+            completedMissions: 0,
+            name: "Utilisateur",
+            phone: "0100000000"
+        };
 
         function redirectToSebPay() {
             window.location.href = SEBPAY_URL;
@@ -470,15 +502,16 @@
             const email = document.getElementById('regEmail').value.trim() || "email@exemple.com";
             const phone = document.getElementById('regPhone').value.trim() || "0100000000";
 
-            const fullName = prenom ? `${nom} ${prenom}` : nom;
-            
-            document.getElementById('welcomeUserText').innerText = `Bonjour, ${fullName}`;
-            document.getElementById('profileName').innerText = fullName;
+            userState.name = prenom ? `${nom} ${prenom}` : nom;
+            userState.phone = phone;
+
+            document.getElementById('welcomeUserText').innerText = `Bonjour, ${userState.name}`;
+            document.getElementById('profileName').innerText = userState.name;
             document.getElementById('profileEmail').innerText = email;
             document.getElementById('displayPhone').innerText = phone;
-            document.getElementById('displayPhoneSub').innerText = phone;
+            document.getElementById('admUserName').innerText = userState.name;
+            document.getElementById('admUserPhone').innerText = `${phone} • 3500 FCFA`;
 
-            // Génération des initiales
             const initials = (nom.charAt(0) + (prenom ? prenom.charAt(0) : '')).toUpperCase();
             document.getElementById('userInitials').innerText = initials || "US";
 
@@ -512,14 +545,81 @@
             }
         }
 
-        function verifyActivation() {
-            alert("Vérification en cours... Redirection vers SebPay si la transaction n'est pas finalisée.");
-            redirectToSebPay();
+        // --- GESTION ADMIN ---
+        function openAdminLogin() {
+            document.getElementById('admin-container').classList.remove('hidden');
+            document.getElementById('admin-login-box').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
         }
 
-        function verifyAssociation() {
-            alert("Vérification de l'association Mobile Money... Redirection vers le paiement SebPay.");
-            redirectToSebPay();
+        function closeAdmin() {
+            document.getElementById('admin-container').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pwd = document.getElementById('adminPasswordInput').value;
+            if(pwd === "admin123" || pwd === "admin") {
+                document.getElementById('admin-login-box').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+            } else {
+                alert("Mot de passe admin incorrect (essayez: admin123)");
+            }
+        }
+
+        function adminValidateActivation(status) {
+            if(status) {
+                userState.isActivated = true;
+                alert("Compte activé avec succès par l'administrateur !");
+                
+                // Mettre à jour l'interface utilisateur
+                document.getElementById('activationTitle').innerText = "Compte actif";
+                document.getElementById('activationDesc').innerText = "Votre compte est activé. Vous pouvez réaliser des missions.";
+                document.getElementById('activationBtn').classList.add('hidden');
+                document.getElementById('activationAlertBox').classList.remove('bg-amber-50/70', 'border-amber-200/80');
+                document.getElementById('activationAlertBox').classList.add('bg-emerald-50', 'border-emerald-200');
+
+                // Déverrouiller les missions
+                document.getElementById('missionLockIcon').className = "fa-solid fa-unlock";
+                document.getElementById('missionStatusTitle').innerText = "Missions débloquées";
+                document.getElementById('missionStatusDesc').innerText = "Vous pouvez maintenant créer des comptes Gmail et gagner de l'argent.";
+                document.getElementById('missionActionBtn').innerText = "Commencer une mission";
+                document.getElementById('missionActionBtn').onclick = function() { alert("Mission de création Gmail lancée !"); };
+
+                document.getElementById('profileStatusBadge').className = "bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full";
+                document.getElementById('profileStatusBadge').innerText = "Compte actif";
+                
+                closeAdmin();
+            } else {
+                alert("Demande rejetée.");
+            }
+        }
+
+        function adminValidateMission() {
+            userState.balance += 2500;
+            userState.completedMissions += 1;
+            
+            document.getElementById('userBalance').innerText = userState.balance;
+            document.getElementById('withdrawSoldeDisplay').innerText = userState.balance;
+            document.getElementById('completedMissionsCount').innerText = userState.completedMissions;
+            document.getElementById('progCount').innerText = userState.completedMissions;
+            document.getElementById('progBar').style.width = `${(userState.completedMissions / 30) * 100}%`;
+
+            alert("Mission validée ! 2500 FCFA ajoutés au solde de l'utilisateur.");
+            closeAdmin();
+        }
+
+        function adminValidateWithdrawal() {
+            alert("Retrait validé et payé via le système.");
+            closeAdmin();
+        }
+
+        function verifyActivation() {
+            if(userState.isActivated) {
+                alert("Votre compte est déjà actif !");
+            } else {
+                alert("Paiement non encore validé par l'administrateur. Veuillez patienter ou effectuer le paiement SebPay.");
+                redirectToSebPay();
+            }
         }
 
         function requestWithdrawal() {
@@ -528,7 +628,11 @@
                 alert("Le minimum de retrait est de 10 000 FCFA.");
                 return;
             }
-            redirectToSebPay();
+            if(amt > userState.balance) {
+                alert("Solde insuffisant pour ce montant.");
+                return;
+            }
+            alert("Demande de retrait enregistrée et transmise à l'administrateur.");
         }
     </script>
 </body>
