@@ -3,310 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayMail - Espace Missions & Rémunérations</title>
+    <title>PayMail - Plateforme de missions rémunérées</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- HEADER / NAVIGATION HAUTE -->
-    <header class="bg-slate-800 border-b border-slate-700 px-4 py-3 sticky top-0 z-50 flex justify-between items-center shadow-md">
-        <div class="flex items-center space-x-2">
-            <div class="bg-indigo-600 text-white font-bold p-2 rounded-xl flex items-center justify-center w-9 h-9 shadow-lg shadow-indigo-500/30">
-                <i class="fa-solid fa-envelope-circle-check text-lg"></i>
+    <!-- 1. AUTHENTIFICATION / CONNEXION / INSCRIPTION -->
+    <div id="auth-container" class="fixed inset-0 bg-slate-50 z-50 flex flex-col justify-between p-5 overflow-y-auto">
+        <div class="max-w-md w-full mx-auto space-y-6 my-auto py-6">
+            <div class="flex items-center space-x-2">
+                <div class="bg-amber-400 text-slate-900 font-extrabold px-3 py-2 rounded-xl flex items-center space-x-1.5 shadow-md">
+                    <i class="fa-solid fa-envelope text-lg"></i>
+                    <span class="text-base tracking-tight font-black">PayMail</span>
+                </div>
             </div>
-            <span class="text-xl font-bold tracking-tight text-white">Pay<span class="text-indigo-400">Mail</span></span>
-        </div>
-        <div class="flex items-center space-x-3">
-            <div class="bg-slate-700 px-3 py-1.5 rounded-full text-xs font-medium flex items-center space-x-1.5 border border-slate-600">
-                <i class="fa-solid fa-wallet text-indigo-400"></i>
-                <span id="userBalance" class="text-emerald-400 font-bold">0 XOF</span>
-            </div>
-            <button onclick="openProfileModal()" class="text-slate-300 hover:text-white transition">
-                <i class="fa-solid fa-circle-user text-2xl"></i>
-            </button>
-        </div>
-    </header>
 
-    <!-- CONTENU PRINCIPAL -->
-    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24">
-        
-        <!-- SECTION ACCUEIL / TABLEAU DE BORD -->
-        <div id="section-home" class="space-y-5">
-            <!-- Carte Solde & Activation -->
-            <div class="bg-gradient-to-br from-indigo-900 via-slate-800 to-indigo-950 p-5 rounded-2xl border border-indigo-500/30 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
-                <div class="flex justify-between items-start mb-3">
+            <!-- Formulaire Connexion -->
+            <div id="view-login" class="space-y-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Accédez à votre espace.</h2>
+                    <p class="text-xs text-slate-500 mt-1">Retrouvez vos missions, vos gains et vos retraits au même endroit.</p>
+                </div>
+                
+                <div class="flex space-x-4 border-b border-slate-200 pb-2">
+                    <button class="font-bold text-slate-900 border-b-2 border-slate-900 pb-1 text-sm">Se connecter</button>
+                    <button onclick="switchAuthView('register')" class="text-slate-400 font-medium pb-1 text-sm">S'inscrire</button>
+                </div>
+
+                <div class="space-y-3 pt-2">
                     <div>
-                        <p class="text-xs text-indigo-200 uppercase tracking-wider font-semibold">Solde Disponible</p>
-                        <h2 id="cardBalance" class="text-3xl font-extrabold text-white mt-1">0 XOF</h2>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Adresse email</label>
+                        <input type="email5" id="loginEmail" value="goudjoejaneudes@gmail.com" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
                     </div>
-                    <span id="accountStatusBadge" class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
-                        Non Activé
-                    </span>
-                </div>
-                <p class="text-xs text-slate-300 mb-4">Activez votre compte pour débloquer les retraits et les missions premium.</p>
-                <button onclick="redirectToSebPay()" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition duration-200 flex items-center justify-center space-x-2 text-sm">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <span>Activer le Compte (Sécurité)</span>
-                </button>
-            </div>
-
-            <!-- Statistiques rapides -->
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-sm">
-                    <p class="text-xs text-slate-400">Missions Réalisées</p>
-                    <p id="statsMissionsCount" class="text-xl font-bold text-white mt-1">0</p>
-                </div>
-                <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl shadow-sm">
-                    <p class="text-xs text-slate-400">Gains Totaux</p>
-                    <p id="statsTotalEarnings" class="text-xl font-bold text-emerald-400 mt-1">0 XOF</p>
-                </div>
-            </div>
-
-            <!-- Bannière d'information -->
-            <div class="bg-indigo-950/40 border border-indigo-500/20 rounded-xl p-4 flex items-start space-x-3">
-                <i class="fa-solid fa-circle-info text-indigo-400 mt-1"></i>
-                <div class="text-xs text-slate-300">
-                    <p class="font-semibold text-white mb-0.5">Règles de sécurité PayMail</p>
-                    Chaque utilisateur doit valider sa session de transfert de sécurité via notre passerelle agréée pour garantir l'authenticité des retraits.
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION MISSIONS -->
-        <div id="section-missions" class="hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white">Missions Disponibles</h3>
-                <span class="text-xs bg-slate-800 text-indigo-400 px-2.5 py-1 rounded-full font-medium border border-slate-700">3 Actives</span>
-            </div>
-
-            <div id="missionsList" class="space-y-3">
-                <!-- Mission 1 -->
-                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-semibold uppercase">Email Marketing</span>
-                            <h4 class="font-semibold text-white text-sm mt-1">Validation de campagne publicitaire</h4>
-                        </div>
-                        <span class="text-emerald-400 font-bold text-sm">+2 500 XOF</span>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Mot de passe</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
                     </div>
-                    <p class="text-xs text-slate-400 mb-3">Vérifiez et confirmez la réception des e-mails publicitaires pour valider la prime.</p>
-                    <button onclick="startMission(this, 2500, 'Validation de campagne publicitaire')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-play"></i>
-                        <span>Lancer la mission</span>
-                    </button>
-                </div>
-
-                <!-- Mission 2 -->
-                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-semibold uppercase">Sondage</span>
-                            <h4 class="font-semibold text-white text-sm mt-1">Évaluation de service client</h4>
-                        </div>
-                        <span class="text-emerald-400 font-bold text-sm">+1 800 XOF</span>
-                    </div>
-                    <p class="text-xs text-slate-400 mb-3">Donnez votre avis sur un flux de messagerie cryptée.</p>
-                    <button onclick="startMission(this, 1800, 'Évaluation de service client')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-play"></i>
-                        <span>Lancer la mission</span>
-                    </button>
-                </div>
-
-                <!-- Mission 3 -->
-                <div class="bg-slate-800 border border-slate-700/80 rounded-xl p-4 shadow-sm flex flex-col justify-between">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-semibold uppercase">Premium</span>
-                            <h4 class="font-semibold text-white text-sm mt-1">Audit de boîte de réception</h4>
-                        </div>
-                        <span class="text-emerald-400 font-bold text-sm">+5 000 XOF</span>
-                    </div>
-                    <p class="text-xs text-slate-400 mb-3">Classer et filtrer les spams entrants pour le compte d'un partenaire.</p>
-                    <button onclick="startMission(this, 5000, 'Audit de boîte de réception')" class="w-full bg-slate-700 hover:bg-indigo-600 text-white font-medium py-2 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-play"></i>
-                        <span>Lancer la mission</span>
+                    <button onclick="handleLogin()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center space-x-2">
+                        <span>Accéder à mon compte</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
                     </button>
                 </div>
             </div>
-        </div>
 
-        <!-- SECTION PORTEFEUILLE / RETRAIT -->
-        <div id="section-wallet" class="hidden space-y-4">
-            <h3 class="text-lg font-bold text-white">Retrait des Fonds</h3>
-            
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-sm space-y-4">
+            <!-- Formulaire Inscription -->
+            <div id="view-register" class="space-y-4 hidden">
                 <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Montant à retirer (XOF)</label>
-                    <input type="number" id="withdrawAmount" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                    <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Inscription gratuite</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Créez votre compte PayMail.</h2>
+                    <p class="text-xs text-slate-500 mt-1">Renseignez vos informations pour commencer à gagner dès aujourd'hui.</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Mode de paiement / Numéro</label>
-                    <input type="text" id="withdrawDest" placeholder="Mobile Money / IBAN" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
-                </div>
-                <button onclick="requestWithdrawal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition text-sm">
-                    Effectuer la demande de retrait
-                </button>
-            </div>
 
-            <!-- Historique -->
-            <div class="space-y-2">
-                <h4 class="text-sm font-semibold text-slate-400">Historique récent</h4>
-                <div id="withdrawHistory" class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 text-center text-xs text-slate-400">
-                    Aucune transaction pour le moment.
+                <div class="flex space-x-4 border-b border-slate-200 pb-2">
+                    <button onclick="switchAuthView('login')" class="text-slate-400 font-medium pb-1 text-sm">Se connecter</button>
+                    <button class="font-bold text-slate-900 border-b-2 border-slate-900 pb-1 text-sm">S'inscrire</button>
                 </div>
-            </div>
-        </div>
 
-        <!-- SECTION SUPPORT / AIDE -->
-        <div id="section-support" class="hidden space-y-4">
-            <h3 class="text-lg font-bold text-white">Centre d'Assistance</h3>
-            <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-3">
-                <div class="flex items-center space-x-3 text-slate-300 text-sm">
-                    <i class="fa-solid fa-headset text-indigo-400 text-lg w-6"></i>
-                    <span>Support en ligne 24/7</span>
-                </div>
-                <div class="flex items-center space-x-3 text-slate-300 text-sm">
-                    <i class="fa-solid fa-shield-cat text-indigo-400 text-lg w-6"></i>
-                    <span>Sécurité garantie par SebPay</span>
-                </div>
-                <button onclick="redirectToSebPay()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl text-xs transition mt-2">
-                    Contacter le service de vérification
-                </button>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- NAVIGATION BASSE (MOBILE BAR) -->
-    <nav class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 px-2 z-50 shadow-2xl">
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-400 transition">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium">Accueil</span>
-        </button>
-        <button onclick="switchTab('missions')" id="nav-missions" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-            <i class="fa-solid fa-list-check text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium">Missions</span>
-        </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-            <i class="fa-solid fa-wallet text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium">Portefeuille</span>
-        </button>
-        <button onclick="switchTab('support')" id="nav-support" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-            <i class="fa-solid fa-circle-question text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium">Aide</span>
-        </button>
-    </nav>
-
-    <!-- MODAL PROFIL / AUTH -->
-    <div id="profileModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-white text-base">Mon Compte PayMail</h3>
-                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="space-y-3 text-xs text-slate-300">
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
-                    <p class="text-slate-400">Identifiant utilisateur</p>
-                    <p class="font-mono text-white text-sm font-semibold">PM-849201</p>
-                </div>
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
-                    <p class="text-slate-400">Statut de sécurité</p>
-                    <p class="text-amber-400 font-semibold">En attente de validation SebPay</p>
+                <div class="space-y-3 pt-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Nom</label>
+                            <input type="text" id="regNom" value="GOUDJO" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Prénom</label>
+                            <input type="text" id="regPrenom" value="Akoueyon" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Adresse email</label>
+                        <input type="email" id="regEmail" value="goudjoejaneudes@gmail.com" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Numéro WhatsApp</label>
+                        <input type="text" id="regPhone" value="+2290167197561" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm">
+                    </div>
+                    <button onclick="handleRegister()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-md transition text-sm">
+                        Créer mon compte <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+                    </button>
                 </div>
             </div>
-            <button onclick="redirectToSebPay()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl text-xs transition">
-                Effectuer le transfert de sécurité
-            </button>
         </div>
     </div>
 
-    <!-- SCRIPT DE GESTION INTERACTIVE -->
-    <script>
-        // Lien officiel SebPay fourni
-        const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
+    <!-- APPLICATION PRINCIPALE -->
+    <div id="app-main" class="hidden flex-1 flex flex-col justify-between">
+        <!-- HEADER -->
+        <header class="bg-white border-b border-slate-100 px-4 py-3 sticky top-0 z-40 flex justify-between items-center shadow-xs">
+            <div class="flex items-center space-x-2">
+                <div class="bg-amber-400 text-slate-950 font-black px-2.5 py-1.5 rounded-lg flex items-center space-x-1 text-sm shadow-xs">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>PayMail</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('profile')" class="text-slate-700 bg-slate-100 w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border border-slate-200">
+                    AA
+                </button>
+            </div>
+        </header>
 
-        let userState = {
-            balance: 0,
-            missionsCompleted: 0,
-            totalEarned: 0
-        };
+        <!-- CONTENU DES ONGLETS -->
+        <main class="flex-1 max-w-md w-full mx-auto p-4 pb-28 space-y-4">
+            
+            <!-- ONGLET ACCUEIL -->
+            <div id="tab-accueil" class="space-y-4">
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-3 shadow-lg">
+                    <p class="text-xs text-slate-400">Bonjour, Akoueyon Jean Eudes</p>
+                    <h2 class="text-xl font-bold">Votre espace PayMail</h2>
+                    <p class="text-xs text-slate-300">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois.</p>
+                </div>
+
+                <!-- Alerte Activation -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-xs">
+                    <div class="flex items-start space-x-3">
+                        <div class="bg-amber-400 text-slate-950 p-2 rounded-xl mt-0.5">
+                            <i class="fa-solid fa-lock text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Missions verrouillées</h4>
+                            <p class="text-xs text-slate-600 mt-0.5">Activez votre compte en effectuant le dépôt de 3500 FCFA pour accéder aux missions et commencer à gagner.</p>
+                        </div>
+                    </div>
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
+                        <span>Payer 3500 FCFA via SebPay</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button onclick="verifyActivation()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold py-2.5 rounded-xl text-xs transition">
+                        <i class="fa-solid fa-rotate"></i> J'ai payé, vérifier mon activation
+                    </button>
+                </div>
+
+                <!-- Objectif du jour -->
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-xs space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded flex items-center space-x-1">
+                            <i class="fa-solid fa-bolt text-[10px]"></i> <span>OBJECTIF DU JOUR</span>
+                        </span>
+                        <span class="text-xs text-slate-400 font-medium">Progression: 0 / 30</span>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900">75 000 FCFA</h3>
+                    <p class="text-xs text-slate-500">Créez jusqu'à 30 comptes Gmail aujourd'hui pour atteindre cet objectif.</p>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-1">
+                        <div class="bg-amber-400 h-full w-0"></div>
+                    </div>
+                </div>
+
+                <!-- Missions Disponibles -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-900 text-sm">Missions disponibles</h3>
+                        <button onclick="switchTab('missions')" class="text-xs text-indigo-600 font-semibold">Voir tout</button>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">DISPONIBLE</span>
+                                <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail - Tech Solutions</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock"></i> 5 min • <i class="fa-brands fa-google"></i> Gmail</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-emerald-600 font-extrabold text-sm">2500 <span class="text-xs">FCFA</span></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">DISPONIBLE</span>
+                                <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail - Pharma Distrib</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock"></i> 5 min • <i class="fa-brands fa-google"></i> Gmail</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-emerald-600 font-extrabold text-sm">2500 <span class="text-xs">FCFA</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET MISSIONS -->
+            <div id="tab-missions" class="hidden space-y-4">
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
+                    <h2 class="text-lg font-bold">Missions Gmail</h2>
+                    <p class="text-xs text-slate-300">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois.</p>
+                </div>
+                <!-- État verrouillé des missions -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-center space-y-3 shadow-xs">
+                    <div class="w-12 h-12 bg-amber-200 text-amber-800 rounded-full flex items-center justify-center mx-auto text-lg">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm">Missions verrouillées</h3>
+                    <p class="text-xs text-slate-600">Activez votre compte en effectuant le dépôt de 3500 FCFA pour accéder aux missions et commencer à gagner.</p>
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm">
+                        Payer 3500 FCFA via SebPay <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                    <button onclick="verifyActivation()" class="w-full bg-white text-slate-800 border border-slate-300 font-semibold py-2.5 rounded-xl text-xs transition">
+                        J'ai payé, vérifier mon activation
+                    </button>
+                </div>
+            </div>
+
+            <!-- ONGLET GAINS -->
+            <div id="tab-gains" class="hidden space-y-4">
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-3 shadow-lg">
+                    <p class="text-xs text-slate-400">Votre activité</p>
+                    <h2 class="text-lg font-bold">Mes gains</h2>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/50 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-slate-400">Solde disponible</span>
+                            <h3 id="displayBalance" class="text-2xl font-extrabold text-white mt-0.5">0 FCFA</h3>
+                        </div>
+                        <div class="text-right text-xs text-slate-400">
+                            <p>0 Missions terminées</p>
+                            <p class="text-amber-400 font-semibold mt-1">2500 Gain par mission</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center space-y-3 shadow-xs">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto text-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos premières missions Gmail. Chaque mission vous rapporte 2500 FCFA.</p>
+                </div>
+            </div>
+
+            <!-- ONGLET RETRAITS -->
+            <div id="tab-retraits" class="hidden space-y-4">
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
+                    <h2 class="text-lg font-bold">Retirer mes gains</h2>
+                    <p class="text-xs text-slate-300">Utilisez vos gains quand le souhaitez.</p>
+                </div>
+
+                <!-- Alerte association numéro -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-xs">
+                    <h4 class="font-bold text-slate-900 text-sm">Vérifiez votre numéro de paiement</h4>
+                    <p class="text-xs text-slate-600">Pour associer votre numéro et recevoir vos paiements directement sur votre Mobile Money, effectuez une transaction de 7000 FCFA via le lien sécurisé SebPay.</p>
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-sm">
+                        Payer 7000 FCFA via SebPay <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                    <button onclick="verifyAssociation()" class="w-full bg-white text-slate-800 border border-slate-300 font-semibold py-2.5 rounded-xl text-xs transition">
+                        J'ai payé, vérifier l'association
+                    </button>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 space-y-3 shadow-xs">
+                    <span class="text-xs text-slate-400 font-medium">Minimum de retrait : 10 000 FCFA</span>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Montant à retirer</label>
+                        <div class="relative">
+                            <input type="number" id="withdrawAmount" value="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-amber-400">
+                            <span class="absolute right-4 top-3 text-xs font-bold text-slate-400">FCFA</span>
+                        </div>
+                    </div>
+                    <button onclick="requestWithdrawal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl text-xs transition">
+                        Continuer
+                    </button>
+                </div>
+            </div>
+
+            <!-- ONGLET PROFIL -->
+            <div id="tab-profile" class="hidden space-y-4">
+                <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-2 shadow-lg">
+                    <p class="text-xs text-slate-400">Gérez vos informations</p>
+                    <h2 class="text-lg font-bold">Mon profil</h2>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-xs">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-amber-400 text-slate-950 rounded-full flex items-center justify-center font-extrabold text-base">
+                            AK
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Akoueyon Jean Eudes Ki</h4>
+                            <p class="text-xs text-slate-500">goudjoejaneudes@gmail.com</p>
+                            <div class="flex space-x-2 mt-1">
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Compte actif</span>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Paiement non vérifié</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-xs divide-y divide-slate-100 text-xs">
+                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
+                        <span class="flex items-center space-x-2"><i class="fa-solid fa-user text-slate-400 w-5"></i> <span>Informations personnelles</span></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </button>
+                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
+                        <span class="flex items-center space-x-2"><i class="fa-solid fa-credit-card text-slate-400 w-5"></i> <span>Numéro de paiement non vérifié</span></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </button>
+                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
+                        <span class="flex items-center space-x-2"><i class="fa-solid fa-shield text-slate-400 w-5"></i> <span>Sécurité et confidentialité</span></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </button>
+                    <button class="w-full p-4 flex justify-between items-center hover:bg-slate-50 text-left font-medium text-slate-800">
+                        <span class="flex items-center space-x-2"><i class="fa-solid fa-circle-question text-slate-400 w-5"></i> <span>Besoin d'aide ?</span></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </button>
+                </div>
+
+                <button onclick="handleLogout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 rounded-2xl text-xs transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Se déconnecter</span>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- NAVIGATION BASSE (MOBILE BAR) -->
+        <nav class="bg-white border-t border-slate-100 fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-2.5 px-2 z-40 shadow-lg">
+            <button onclick="switchTab('accueil')" id="nav-accueil" class="flex flex-col items-center text-amber-500 transition">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">Accueil</span>
+            </button>
+            <button onclick="switchTab('missions')" id="nav-missions" class="flex flex-col items-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-list-check text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">Missions</span>
+            </button>
+            <button onclick="switchTab('gains')" id="nav-gains" class="flex flex-col items-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-wallet text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">Gains</span>
+            </button>
+            <button onclick="switchTab('retraits')" id="nav-retraits" class="flex flex-col items-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-money-bill-transfer text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">Retraits</span>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-circle-user text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">Profil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- SCRIPT DE GESTION -->
+    <script>
+        const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
 
         function redirectToSebPay() {
             window.location.href = SEBPAY_URL;
         }
 
+        function switchAuthView(view) {
+            if(view === 'register') {
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('view-register').classList.remove('hidden');
+            } else {
+                document.getElementById('view-register').classList.add('hidden');
+                document.getElementById('view-login').classList.remove('hidden');
+            }
+        }
+
+        function handleLogin() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('app-main').classList.remove('hidden');
+        }
+
+        function handleRegister() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('app-main').classList.remove('hidden');
+        }
+
+        function handleLogout() {
+            document.getElementById('app-main').classList.add('hidden');
+            document.getElementById('auth-container').classList.remove('hidden');
+        }
+
         function switchTab(tabId) {
-            ['home', 'missions', 'wallet', 'support'].forEach(t => {
-                document.getElementById(`section-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('text-indigo-400');
-                document.getElementById(`nav-${t}`).classList.add('text-slate-400');
+            ['accueil', 'missions', 'gains', 'retraits', 'profile'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                if(nav) {
+                    nav.classList.remove('text-amber-500');
+                    nav.classList.add('text-slate-400');
+                }
             });
 
-            document.getElementById(`section-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.add('text-indigo-400');
-            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-400');
-        }
-
-        function startMission(button, reward, title) {
-            button.disabled = true;
-            button.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement...`;
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if(activeTab) activeTab.classList.remove('hidden');
             
-            setTimeout(() => {
-                userState.balance += reward;
-                userState.missionsCompleted += 1;
-                userState.totalEarned += reward;
-                
-                updateUI();
-                
-                button.innerHTML = `<i class="fa-solid fa-check"></i> Validé (+${reward} XOF)`;
-                button.classList.remove('bg-slate-700', 'hover:bg-indigo-600');
-                button.classList.add('bg-emerald-600', 'text-white');
-            }, 1500);
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.remove('text-slate-400');
+                activeNav.classList.add('text-amber-500');
+            }
         }
 
-        function updateUI() {
-            document.getElementById('userBalance').innerText = `${userState.balance.toLocaleString()} XOF`;
-            document.getElementById('cardBalance').innerText = `${userState.balance.toLocaleString()} XOF`;
-            document.getElementById('statsMissionsCount').innerText = userState.missionsCompleted;
-            document.getElementById('statsTotalEarnings').innerText = `${userState.totalEarned.toLocaleString()} XOF`;
+        function verifyActivation() {
+            alert("Vérification en cours... Veuillez patienter quelques instants après votre paiement SebPay.");
+        }
+
+        function verifyAssociation() {
+            alert("Vérification de l'association en cours...");
         }
 
         function requestWithdrawal() {
-            const amount = parseInt(document.getElementById('withdrawAmount').value);
-            const dest = document.getElementById('withdrawDest').value;
-
-            if (!amount || amount <= 0) {
-                alert("Veuillez entrer un montant valide.");
+            const amt = parseInt(document.getElementById('withdrawAmount').value);
+            if(amt < 10000) {
+                alert("Le minimum de retrait est de 10 000 FCFA.");
                 return;
             }
-            if (amount > userState.balance) {
-                alert("Solde insuffisant pour ce retrait.");
-                return;
-            }
-            if (!dest) {
-                alert("Veuillez indiquer le moyen de paiement.");
-                return;
-            }
-
-            // Redirection vers SebPay si le compte nécessite la validation de sécurité
-            if(confirm("Pour valider ce transfert de fonds, une vérification de sécurité SebPay est requise. Continuer ?")) {
-                redirectToSebPay();
-            }
-        }
-
-        function openProfileModal() {
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');
+            alert("Demande enregistrée.");
         }
     </script>
 </body>
