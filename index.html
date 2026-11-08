@@ -14,15 +14,14 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- ÉCRAN D'AUTHENTIFICATION -->
+    <!-- ÉCRAN D'AUTHENTIFICATION (CONNEXION / INSCRIPTION) -->
     <div id="auth-container" class="fixed inset-0 bg-slate-50 z-50 flex flex-col justify-between p-4 overflow-y-auto">
         <div class="max-w-md w-full mx-auto space-y-4 my-auto py-6">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
                 <div class="bg-amber-400 text-slate-950 font-black px-3 py-2 rounded-xl flex items-center space-x-1.5 shadow-md">
                     <i class="fa-solid fa-envelope text-lg"></i>
                     <span class="text-base tracking-tight">PayMail</span>
                 </div>
-                <button onclick="openAdminLogin()" class="text-xs bg-slate-900 text-white font-bold px-3 py-2 rounded-xl">Accès Admin</button>
             </div>
 
             <!-- Vue Connexion -->
@@ -53,7 +52,7 @@
                 </div>
             </div>
 
-            <!-- Vue Inscription -->
+            <!-- Vue Inscription (Avec choix du pays et WhatsApp) -->
             <div id="view-register" class="space-y-3 hidden">
                 <div>
                     <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Inscription gratuite</span>
@@ -93,6 +92,8 @@
                                 <option value="Côte d'Ivoire">Côte d'Ivoire</option>
                                 <option value="Togo">Togo</option>
                                 <option value="Sénégal">Sénégal</option>
+                                <option value="Cameroun">Cameroun</option>
+                                <option value="Burkina Faso">Burkina Faso</option>
                             </select>
                         </div>
                         <div>
@@ -105,7 +106,7 @@
                     <div>
                         <label class="block text-[11px] font-medium text-slate-600 mb-1">Moyen de paiement</label>
                         <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-900 text-xs">
-                            <option>MTN Mobile Money / SebPay</option>
+                            <option>Mobile Money / SebPay</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
@@ -130,94 +131,6 @@
         </div>
     </div>
 
-    <!-- PANNEAU ADMINISTRATEUR -->
-    <div id="admin-container" class="hidden fixed inset-0 bg-slate-900 z-50 flex flex-col justify-between p-4 overflow-y-auto text-white">
-        <div class="max-w-md w-full mx-auto space-y-6 my-auto py-6">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-red-500 text-white font-black px-2.5 py-1 rounded-lg text-xs">ADMIN</span>
-                    <h2 class="text-xl font-bold">Panneau de Contrôle</h2>
-                </div>
-                <button onclick="closeAdmin()" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <!-- Login Admin si non connecté -->
-            <div id="admin-login-box" class="space-y-4">
-                <p class="text-xs text-slate-400">Veuillez entrer le mot de passe administrateur pour continuer.</p>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Mot de passe Admin</label>
-                    <input type="password" id="adminPasswordInput" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm">
-                </div>
-                <button onclick="verifyAdminPassword()" class="w-full bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-xs">Se connecter à l'Admin</button>
-            </div>
-
-            <!-- Contenu Admin (Gérant Dépôts, Retraits, Mails) -->
-            <div id="admin-dashboard" class="hidden space-y-5">
-                <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                        <span class="text-xs text-slate-400">Total Dépôts en attente</span>
-                        <h3 class="text-lg font-black text-amber-400 mt-1" id="adminDepotCount">1</h3>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                        <span class="text-xs text-slate-400">Total Retraits en attente</span>
-                        <h3 class="text-lg font-black text-amber-400 mt-1" id="adminRetraitCount">1</h3>
-                    </div>
-                </div>
-
-                <!-- Gestion des Activations / Dépôts (3500 & 7000) -->
-                <div class="space-y-2">
-                    <h3 class="text-sm font-bold text-slate-300">Demandes de Paiement & Activation</h3>
-                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-white" id="admUserName">Akoueyon Jean Eudes</p>
-                                <p class="text-slate-400 text-[11px]" id="admUserPhone">0167197561 • 3500 FCFA</p>
-                            </div>
-                            <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">En attente</span>
-                        </div>
-                        <div class="flex space-x-2 pt-1">
-                            <button onclick="adminValidateActivation(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg">Valider</button>
-                            <button onclick="adminValidateActivation(false)" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg">Rejeter</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gestion des Retraits -->
-                <div class="space-y-2">
-                    <h3 class="text-sm font-bold text-slate-300">Demandes de Retraits</h3>
-                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-white">Akoueyon Jean Eudes</p>
-                                <p class="text-slate-400 text-[11px]">10 000 FCFA • MTN MoMo</p>
-                            </div>
-                            <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">En attente</span>
-                        </div>
-                        <div class="flex space-x-2 pt-1">
-                            <button onclick="adminValidateWithdrawal()" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-lg">Marquer Payé</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Validation des Mails / Missions -->
-                <div class="space-y-2">
-                    <h3 class="text-sm font-bold text-slate-300">Validation des Comptes Gmail (Missions)</h3>
-                    <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-white">Tech Solutions SARL</p>
-                                <p class="text-slate-400 text-[11px]">Création de compte Gmail (+2500 FCFA)</p>
-                            </div>
-                        </div>
-                        <button onclick="adminValidateMission()" class="w-full bg-amber-400 text-slate-950 font-bold py-2 rounded-lg">Créditer l'utilisateur (2500 FCFA)</button>
-                    </div>
-                </div>
-
-                <button onclick="closeAdmin()" class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs border border-slate-700">Fermer l'Admin</button>
-            </div>
-        </div>
-    </div>
-
     <!-- APPLICATION PRINCIPALE -->
     <div id="app-main" class="hidden flex-1 flex flex-col justify-between">
         <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-40 flex justify-between items-center text-white">
@@ -228,7 +141,6 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="openAdminLogin()" class="text-xs bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400">Admin</button>
                 <button onclick="switchTab('profile')" class="text-slate-300 hover:text-white transition"><i class="fa-regular fa-user text-lg"></i></button>
             </div>
         </header>
@@ -249,7 +161,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-slate-900 text-sm" id="activationTitle">Compte en attente d'activation</h4>
-                            <p class="text-xs text-slate-600 mt-0.5" id="activationDesc">Effectuez le dépôt d'activation pour accéder aux missions et aux gains.</p>
+                            <p class="text-xs text-slate-600 mt-0.5" id="activationDesc">Effectuez le dépôt d'activation de 3500 FCFA pour accéder aux missions.</p>
                         </div>
                     </div>
                     <button id="activationBtn" onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
@@ -267,20 +179,17 @@
                         <span class="text-[10px] font-bold text-slate-900 bg-amber-400 px-2.5 py-1 rounded-md flex items-center space-x-1">
                             <i class="fa-solid fa-bolt text-[10px]"></i> <span>OBJECTIF DU JOUR</span>
                         </span>
-                        <span class="text-xs text-slate-400 font-medium">Progression du jour · <span id="progCount">0</span> / 30</span>
+                        <span class="text-xs text-slate-400 font-medium">Progression · <span id="progCount">0</span> / 30</span>
                     </div>
                     <h3 class="text-2xl font-black text-white">75 000 FCFA</h3>
-                    <p class="text-xs text-slate-300">Créez jusqu'à 30 comptes Gmail aujourd'hui pour atteindre cet objectif.</p>
+                    <p class="text-xs text-slate-300">Créez jusqu'à 30 comptes Gmail aujourd'hui.</p>
                     <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                         <div id="progBar" class="bg-amber-400 h-full w-0"></div>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-900 text-sm">Missions disponibles</h3>
-                    </div>
-                    
+                    <h3 class="font-bold text-slate-900 text-sm">Missions disponibles</h3>
                     <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs space-y-3">
                         <div class="flex justify-between items-start">
                             <div class="flex space-x-3">
@@ -308,7 +217,7 @@
                     <p class="text-xs text-slate-500">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois</p>
                     <h2 class="text-2xl font-black text-slate-900">Missions Gmail</h2>
                 </div>
-                <div id="missionsContent" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
+                <div id="missionsBox" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
                     <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto text-xl">
                         <i class="fa-solid fa-lock" id="missionLockIcon"></i>
                     </div>
@@ -356,7 +265,7 @@
                             <i class="fa-solid fa-trophy"></i>
                         </div>
                         <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos premières missions.</p>
+                        <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos missions.</p>
                     </div>
                 </div>
             </div>
@@ -389,7 +298,7 @@
 
                     <div class="bg-white p-3.5 rounded-xl border border-amber-200/60 text-xs space-y-1.5">
                         <div class="flex justify-between"><span class="text-slate-500">Numéro</span><strong class="text-slate-900 font-mono" id="displayPhone">0100000000</strong></div>
-                        <div class="flex justify-between"><span class="text-slate-500">Moyen</span><strong class="text-slate-900">MTN MoMo</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Moyen</span><strong class="text-slate-900">Mobile Money</strong></div>
                     </div>
 
                     <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
@@ -466,20 +375,12 @@
         </nav>
     </div>
 
-    <!-- SCRIPT DE FONCTIONNEMENT ET LOGIQUE ADMIN -->
+    <!-- SCRIPT CLIENT -->
     <script>
         const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
-        let userState = {
-            isActivated: false,
-            balance: 0,
-            completedMissions: 0,
-            name: "Utilisateur",
-            phone: "0100000000"
-        };
+        let userState = { isActivated: false, balance: 0, completedMissions: 0 };
 
-        function redirectToSebPay() {
-            window.location.href = SEBPAY_URL;
-        }
+        function redirectToSebPay() { window.location.href = SEBPAY_URL; }
 
         function switchAuthView(view) {
             if(view === 'register') {
@@ -502,15 +403,11 @@
             const email = document.getElementById('regEmail').value.trim() || "email@exemple.com";
             const phone = document.getElementById('regPhone').value.trim() || "0100000000";
 
-            userState.name = prenom ? `${nom} ${prenom}` : nom;
-            userState.phone = phone;
-
-            document.getElementById('welcomeUserText').innerText = `Bonjour, ${userState.name}`;
-            document.getElementById('profileName').innerText = userState.name;
+            const fullName = prenom ? `${nom} ${prenom}` : nom;
+            document.getElementById('welcomeUserText').innerText = `Bonjour, ${fullName}`;
+            document.getElementById('profileName').innerText = fullName;
             document.getElementById('profileEmail').innerText = email;
             document.getElementById('displayPhone').innerText = phone;
-            document.getElementById('admUserName').innerText = userState.name;
-            document.getElementById('admUserPhone').innerText = `${phone} • 3500 FCFA`;
 
             const initials = (nom.charAt(0) + (prenom ? prenom.charAt(0) : '')).toUpperCase();
             document.getElementById('userInitials').innerText = initials || "US";
@@ -529,110 +426,23 @@
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add('hidden');
                 const nav = document.getElementById(`nav-${t}`);
-                if(nav) {
-                    nav.classList.remove('text-amber-500');
-                    nav.classList.add('text-slate-400');
-                }
+                if(nav) { nav.classList.remove('text-amber-500'); nav.classList.add('text-slate-400'); }
             });
-
-            const activeTab = document.getElementById(`tab-${tabId}`);
-            if(activeTab) activeTab.classList.remove('hidden');
-            
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if(activeNav) {
-                activeNav.classList.remove('text-slate-400');
-                activeNav.classList.add('text-amber-500');
-            }
-        }
-
-        // --- GESTION ADMIN ---
-        function openAdminLogin() {
-            document.getElementById('admin-container').classList.remove('hidden');
-            document.getElementById('admin-login-box').classList.remove('hidden');
-            document.getElementById('admin-dashboard').classList.add('hidden');
-        }
-
-        function closeAdmin() {
-            document.getElementById('admin-container').classList.add('hidden');
-        }
-
-        function verifyAdminPassword() {
-            const pwd = document.getElementById('adminPasswordInput').value;
-            if(pwd === "admin123" || pwd === "admin") {
-                document.getElementById('admin-login-box').classList.add('hidden');
-                document.getElementById('admin-dashboard').classList.remove('hidden');
-            } else {
-                alert("Mot de passe admin incorrect (essayez: admin123)");
-            }
-        }
-
-        function adminValidateActivation(status) {
-            if(status) {
-                userState.isActivated = true;
-                alert("Compte activé avec succès par l'administrateur !");
-                
-                // Mettre à jour l'interface utilisateur
-                document.getElementById('activationTitle').innerText = "Compte actif";
-                document.getElementById('activationDesc').innerText = "Votre compte est activé. Vous pouvez réaliser des missions.";
-                document.getElementById('activationBtn').classList.add('hidden');
-                document.getElementById('activationAlertBox').classList.remove('bg-amber-50/70', 'border-amber-200/80');
-                document.getElementById('activationAlertBox').classList.add('bg-emerald-50', 'border-emerald-200');
-
-                // Déverrouiller les missions
-                document.getElementById('missionLockIcon').className = "fa-solid fa-unlock";
-                document.getElementById('missionStatusTitle').innerText = "Missions débloquées";
-                document.getElementById('missionStatusDesc').innerText = "Vous pouvez maintenant créer des comptes Gmail et gagner de l'argent.";
-                document.getElementById('missionActionBtn').innerText = "Commencer une mission";
-                document.getElementById('missionActionBtn').onclick = function() { alert("Mission de création Gmail lancée !"); };
-
-                document.getElementById('profileStatusBadge').className = "bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full";
-                document.getElementById('profileStatusBadge').innerText = "Compte actif";
-                
-                closeAdmin();
-            } else {
-                alert("Demande rejetée.");
-            }
-        }
-
-        function adminValidateMission() {
-            userState.balance += 2500;
-            userState.completedMissions += 1;
-            
-            document.getElementById('userBalance').innerText = userState.balance;
-            document.getElementById('withdrawSoldeDisplay').innerText = userState.balance;
-            document.getElementById('completedMissionsCount').innerText = userState.completedMissions;
-            document.getElementById('progCount').innerText = userState.completedMissions;
-            document.getElementById('progBar').style.width = `${(userState.completedMissions / 30) * 100}%`;
-
-            alert("Mission validée ! 2500 FCFA ajoutés au solde de l'utilisateur.");
-            closeAdmin();
-        }
-
-        function adminValidateWithdrawal() {
-            alert("Retrait validé et payé via le système.");
-            closeAdmin();
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-400');
+            document.getElementById(`nav-${tabId}`).classList.add('text-amber-500');
         }
 
         function verifyActivation() {
-            if(userState.isActivated) {
-                alert("Votre compte est déjà actif !");
-            } else {
-                alert("Paiement non encore validé par l'administrateur. Veuillez patienter ou effectuer le paiement SebPay.");
-                redirectToSebPay();
-            }
+            alert("Vérification en cours... Redirection vers SebPay si non finalisé.");
+            redirectToSebPay();
         }
 
         function requestWithdrawal() {
             const amt = parseInt(document.getElementById('withdrawAmount').value);
-            if(amt < 10000) {
-                alert("Le minimum de retrait est de 10 000 FCFA.");
-                return;
-            }
-            if(amt > userState.balance) {
-                alert("Solde insuffisant pour ce montant.");
-                return;
-            }
-            alert("Demande de retrait enregistrée et transmise à l'administrateur.");
+            if(amt < 10000) { alert("Le minimum de retrait est de 10 000 FCFA."); return; }
+            if(amt > userState.balance) { alert("Solde insuffisant."); return; }
+            alert("Demande de retrait enregistrée.");
         }
     </script>
 </body>
