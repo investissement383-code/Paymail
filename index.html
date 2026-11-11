@@ -230,24 +230,56 @@
                 </div>
             </div>
 
-            <!-- 2. ONGLET MISSIONS -->
+            <!-- 2. ONGLET MISSIONS (Déblocage dynamique) -->
             <div id="tab-missions" class="hidden space-y-4">
                 <div class="space-y-1">
                     <p class="text-xs text-slate-500">Créez des comptes Gmail et gagnez 2500 FCFA à chaque fois</p>
                     <h2 class="text-2xl font-black text-slate-900">Missions Gmail</h2>
                 </div>
-                <div id="missionsBox" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
+                
+                <!-- Boîte verrouillée par défaut -->
+                <div id="missionsBoxLocked" class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
                     <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-lock" id="missionLockIcon"></i>
+                        <i class="fa-solid fa-lock"></i>
                     </div>
                     <div class="space-y-1">
-                        <h3 class="font-bold text-slate-900 text-base" id="missionStatusTitle">Missions verrouillées</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed" id="missionStatusDesc">Activez votre compte en effectuant le dépôt de 4500 FCFA pour accéder aux missions.</p>
+                        <h3 class="font-bold text-slate-900 text-base">Missions verrouillées</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Activez votre compte en effectuant le dépôt de 4500 FCFA pour accéder aux missions.</p>
                     </div>
-                    <button id="missionActionBtn" onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
+                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
                         <span>Payer 4500 FCFA via SebPay</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
+                </div>
+
+                <!-- Liste des missions débloquées (Masquée tant que non validé) -->
+                <div id="missionsBoxUnlocked" class="hidden space-y-3">
+                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-check text-base"></i>
+                        <span>Compte activé ! Vous pouvez effectuer vos missions.</span>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-xs space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="flex space-x-3">
+                                <div class="bg-amber-50 text-amber-600 p-3 rounded-xl h-fit">
+                                    <i class="fa-regular fa-envelope text-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">PRÊT À L'EMPLOI</span>
+                                    <h4 class="font-bold text-slate-900 text-sm mt-1">Création de compte Gmail</h4>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">Suivez les consignes pour valider votre tâche.</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-slate-900 font-extrabold text-base">2500</span>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase">FCFA</p>
+                            </div>
+                        </div>
+                        <button onclick="completeMission()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                            Soumettre la mission accomplie
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -311,7 +343,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-slate-900 text-sm">Vérifiez votre numéro de paiement</h4>
-                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">Effectuez une transaction de 7000 FCFA via SebPay pour associer votre Mobile Money.</p>
+                            <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">Associez votre Mobile Money pour recevoir vos paiements.</p>
                         </div>
                     </div>
 
@@ -319,11 +351,6 @@
                         <div class="flex justify-between"><span class="text-slate-500">Numéro</span><strong class="text-slate-900 font-mono" id="displayPhone">0100000000</strong></div>
                         <div class="flex justify-between"><span class="text-slate-500">Moyen</span><strong class="text-slate-900">Mobile Money</strong></div>
                     </div>
-
-                    <button onclick="redirectToSebPay()" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2">
-                        <span>Payer 7000 FCFA via SebPay</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
                 </div>
 
                 <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-xs space-y-3">
@@ -414,6 +441,7 @@
         function handleLogin() {
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('app-main').classList.remove('hidden');
+            checkActivationStatus();
         }
 
         function handleRegister() {
@@ -422,17 +450,51 @@
             const email = document.getElementById('regEmail').value.trim() || "email@exemple.com";
             const phone = document.getElementById('regPhone').value.trim() || "0100000000";
 
-            const fullName = prenom ? `${nom} ${prenom}` : nom;
-            document.getElementById('welcomeUserText').innerText = `Bonjour, ${fullName}`;
-            document.getElementById('profileName').innerText = fullName;
+            // Sauvegarde locale pour simuler la persistance et l'envoi vers l'admin
+            localStorage.setItem('paymail_user_email', email);
+            localStorage.setItem('paymail_user_name', `${nom} ${prenom}`);
+            localStorage.setItem('paymail_user_phone', phone);
+            if(!localStorage.getItem('paymail_activated')) {
+                localStorage.setItem('paymail_activated', 'false');
+            }
+
+            updateUserInterface();
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('app-main').classList.remove('hidden');
+        }
+
+        function updateUserInterface() {
+            const name = localStorage.getItem('paymail_user_name') || "Utilisateur PayMail";
+            const email = localStorage.getItem('paymail_user_email') || "email@exemple.com";
+            const phone = localStorage.getItem('paymail_user_phone') || "0100000000";
+            const isActivated = localStorage.getItem('paymail_activated') === 'true';
+
+            document.getElementById('welcomeUserText').innerText = `Bonjour, ${name}`;
+            document.getElementById('profileName').innerText = name;
             document.getElementById('profileEmail').innerText = email;
             document.getElementById('displayPhone').innerText = phone;
 
-            const initials = (nom.charAt(0) + (prenom ? prenom.charAt(0) : '')).toUpperCase();
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2);
             document.getElementById('userInitials').innerText = initials || "US";
 
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('app-main').classList.remove('hidden');
+            if (isActivated) {
+                // Masquer les alertes de paiement et débloquer les missions
+                const alertBox = document.getElementById('activationAlertBox');
+                if(alertBox) alertBox.innerHTML = '<div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold flex items-center space-x-2"><i class="fa-solid fa-circle-check text-base"></i><span>Votre compte est activé avec succès !</span></div>';
+                
+                document.getElementById('profileStatusBadge').className = "bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full";
+                document.getElementById('profileStatusBadge').innerText = "Compte Actif";
+
+                document.getElementById('missionsBoxLocked').classList.add('hidden');
+                document.getElementById('missionsBoxUnlocked').classList.remove('hidden');
+            } else {
+                document.getElementById('missionsBoxLocked').classList.remove('hidden');
+                document.getElementById('missionsBoxUnlocked').classList.add('hidden');
+            }
+        }
+
+        function checkActivationStatus() {
+            updateUserInterface();
         }
 
         function handleLogout() {
@@ -453,16 +515,44 @@
         }
 
         function verifyActivation() {
-            alert("Vérification en cours... Redirection vers SebPay si non finalisé.");
-            redirectToSebPay();
+            if(localStorage.getItem('paymail_activated') === 'true') {
+                alert("Votre compte est déjà actif !");
+                updateUserInterface();
+            } else {
+                alert("Vérification en cours... Redirection vers SebPay si non finalisé.");
+                redirectToSebPay();
+            }
+        }
+
+        function completeMission() {
+            userState.balance += 2500;
+            userState.completedMissions += 1;
+            document.getElementById('userBalance').innerText = userState.balance;
+            document.getElementById('completedMissionsCount').innerText = userState.completedMissions;
+            document.getElementById('withdrawSoldeDisplay').innerText = userState.balance;
+            document.getElementById('withdrawAmount').value = userState.balance;
+            
+            // Progression
+            let count = parseInt(document.getElementById('progCount').innerText) + 1;
+            if(count > 30) count = 30;
+            document.getElementById('progCount').innerText = count;
+            document.getElementById('progBar').style.width = (count / 30 * 100) + '%';
+
+            alert("Mission validée ! 2500 FCFA ajoutés à votre solde.");
         }
 
         function requestWithdrawal() {
             const amt = parseInt(document.getElementById('withdrawAmount').value);
             if(amt < 10000) { alert("Le minimum de retrait est de 10 000 FCFA."); return; }
             if(amt > userState.balance) { alert("Solde insuffisant."); return; }
-            alert("Demande de retrait enregistrée.");
+            alert("Demande de retrait enregistrée avec succès.");
         }
+
+        window.onload = function() {
+            if(localStorage.getItem('paymail_user_email')) {
+                updateUserInterface();
+            }
+        };
     </script>
 </body>
 </html>
