@@ -37,44 +37,31 @@
         <div id="admin-dashboard" class="hidden space-y-5">
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                    <span class="text-xs text-slate-400">Dépôts en attente</span>
+                    <span class="text-xs text-slate-400">Inscriptions / Dépôts</span>
                     <h3 class="text-lg font-black text-amber-400 mt-1">1</h3>
                 </div>
                 <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
                     <span class="text-xs text-slate-400">Retraits en attente</span>
-                    <h3 class="text-lg font-black text-amber-400 mt-1">1</h3>
+                    <h3 class="text-lg font-black text-amber-400 mt-1">0</h3>
                 </div>
             </div>
 
-            <!-- Validation Activations (4500 FCFA) -->
+            <!-- Validation Activations (4500 FCFA) avec affichage du mail dynamique -->
             <div class="space-y-2">
-                <h3 class="text-sm font-bold text-slate-300">Demandes d'Activation</h3>
-                <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                    <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-300">Demandes d'Activation Clients</h3>
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl space-y-3 text-xs">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="font-bold text-white">Utilisateur PayMail</p>
-                            <p class="text-slate-400 text-[11px]">4500 FCFA • En attente</p>
+                            <p class="font-bold text-white text-sm" id="adminClientName">Nom du client</p>
+                            <p class="text-amber-400 font-mono text-xs mt-0.5" id="adminClientEmail">email@exemple.com</p>
+                            <p class="text-slate-400 text-[11px] mt-1">Frais : 4500 FCFA • En attente</p>
                         </div>
-                        <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">Actif</span>
+                        <span id="adminStatusBadge" class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">En attente</span>
                     </div>
-                    <div class="flex space-x-2 pt-1">
-                        <button onclick="alert('Activation validée avec succès !')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg">Valider</button>
-                        <button onclick="alert('Demande rejetée')" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg">Rejeter</button>
+                    <div class="flex space-x-2 pt-2 border-t border-slate-700/60">
+                        <button onclick="approveClient()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg transition">Valider & Activer</button>
+                        <button onclick="rejectClient()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-lg transition">Rejeter</button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Validation Retraits -->
-            <div class="space-y-2">
-                <h3 class="text-sm font-bold text-slate-300">Demandes de Retraits</h3>
-                <div class="bg-slate-800 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-white">Demande de retrait</p>
-                            <p class="text-slate-400 text-[11px]">10 000 FCFA • Mobile Money</p>
-                        </div>
-                    </div>
-                    <button onclick="alert('Retrait marqué comme payé !')" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-lg">Marquer Payé</button>
                 </div>
             </div>
 
@@ -88,9 +75,34 @@
             if(pwd === "admin123" || pwd === "admin") {
                 document.getElementById('admin-login-box').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
+                loadAdminData();
             } else {
                 alert("Mot de passe incorrect !");
             }
+        }
+
+        function loadAdminData() {
+            const name = localStorage.getItem('paymail_user_name') || "Utilisateur Test";
+            const email = localStorage.getItem('paymail_user_email') || "client@exemple.com";
+            const isActivated = localStorage.getItem('paymail_activated') === 'true';
+
+            document.getElementById('adminClientName').innerText = name;
+            document.getElementById('adminClientEmail').innerText = email;
+
+            if (isActivated) {
+                document.getElementById('adminStatusBadge').className = "bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold";
+                document.getElementById('adminStatusBadge').innerText = "Actif";
+            }
+        }
+
+        function approveClient() {
+            localStorage.setItem('paymail_activated', 'true');
+            alert("Compte validé avec succès ! Les missions sont maintenant débloquées pour le client.");
+            loadAdminData();
+        }
+
+        function rejectClient() {
+            alert("Demande rejetée.");
         }
     </script>
 </body>
